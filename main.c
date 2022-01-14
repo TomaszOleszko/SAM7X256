@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <string.h>
 //#include <targets\AT91SAM7.h>
 #include "PCF8833U8_lcd.h"
 #define up PIOA_SODR_P9
@@ -19,9 +18,17 @@ struct menu_struct {
     void ( *menu_function)(void);
 };
 
-void show_author(void) {
-    printf("Tomasz_Oleszko\n");
+/*
+__attribute__ ((section(".fast")))
+void delay(int n) //procedura opoznienia
+{
+    volatile int i;
+    for(i=3000*n;i>0;i--)
+    {
+        __asm__("nop");
+    }
 }
+*/
 
 void print_obraz1(void) {
     printf("Obraz 1 :DDD\n");
@@ -32,7 +39,12 @@ void print_obraz2(void) {
 }
 
 void print_animacja(void) {
-    printf("Animacja :DDD\n");
+    while (1) {
+        print_obraz1();
+        // delay(500);
+        print_obraz2();
+        // delay(500);
+    }
 }
 
 void print_obrazItekst(void) {
@@ -40,24 +52,34 @@ void print_obrazItekst(void) {
 }
 
 void print_okrag(void) {
-    printf("print_okrag\n");
+   // LCDSetCircle(65,65,7,BLACK);
 }
 
 void print_kwadrat(void) {
-    printf("print_kwadratD\n");
+   // LCDSetRect(43, 43, 88, 88, 1, BLACK);
 }
 
 void print_trojkat(void) {
-    printf("print_trojkat\n");
+   // LCDSetLine(95, 95, 95, 35, BLACK);
+   // LCDSetLine(95, 35, 43, 65, BLACK);
+   // LCDSetLine(43, 65, 95, 95, BLACK);
 }
 
 void print_trapez(void) {
-    printf("print_trapez\n");
+  //  LCDSetLine(30, 20, 30, 110, BLACK);
+  //  LCDSetLine(30, 20, 80, 5, BLACK);
+   // LCDSetLine(80, 125, 30, 110, BLACK);
+  //  LCDSetLine(80, 5, 80, 125, BLACK);
 }
 
-menu_t menu_1, menu_2, menu_3, menu_4, sub_menu_1_1, sub_menu_1_2, sub_menu_1_3, sub_menu_2_1, sub_menu_3_1, sub_menu_3_2, sub_menu_3_3, sub_menu_3_4;
+void show_author(void) {
+   // LCDPutStr("Tomasz_Oleszko", 43, 11, MEDIUM, BLACK, GREEN);
+   // LCDPutStr("GR 7.5", 64, 45, MEDIUM, BLACK, WHITE);
+}
+
+menu_t menu_1, menu_2, menu_3, menu_4, sub_menu_1_1, sub_menu_1_2, sub_menu_1_3, sub_menu_3_1, sub_menu_3_2, sub_menu_3_3, sub_menu_3_4;
 menu_t menu_1 = {
-        "XObraz\nTekst+obraz\nFigury\nO Autorze\n",
+        "ObrazX\nTekst+obraz\nFigury\nO Autorze\n",
         &menu_2,
         &menu_1,
         &sub_menu_1_1,
@@ -65,7 +87,7 @@ menu_t menu_1 = {
         NULL
 };
 menu_t sub_menu_1_1 = {
-        "XObraz 1\nObraz 2\nAnimacja\n",
+        "Obraz 1X\nObraz 2\nAnimacja\n",
         &sub_menu_1_2,
         &sub_menu_1_1,
         NULL,
@@ -73,7 +95,7 @@ menu_t sub_menu_1_1 = {
         print_obraz1
 };
 menu_t sub_menu_1_2 = {
-        "Obraz 1\nXObraz 2\nAnimacja\n",
+        "Obraz 1\nObraz 2X\nAnimacja\n",
         &sub_menu_1_3,
         &sub_menu_1_1,
         NULL,
@@ -81,7 +103,7 @@ menu_t sub_menu_1_2 = {
         print_obraz2
 };
 menu_t sub_menu_1_3 = {
-        "Obraz 1\nObraz 2\nXAnimacja\n",
+        "Obraz 1\nObraz 2\nAnimacjaX\n",
         &sub_menu_1_3,
         &sub_menu_1_2,
         NULL,
@@ -89,7 +111,7 @@ menu_t sub_menu_1_3 = {
         print_animacja
 };
 menu_t menu_2 = {
-        "Obraz\nXTekst+obraz\nFigury\nO Autorze\n",
+        "Obraz\nTekst+obrazX\nFigury\nO Autorze\n",
         &menu_3,
         &menu_1,
         NULL,
@@ -97,7 +119,7 @@ menu_t menu_2 = {
         print_obrazItekst
 };
 menu_t menu_3 = {
-        "Obraz\nTekst+obraz\nXFigury\nO Autorze\n",
+        "Obraz\nTekst+obraz\nFiguryX\nO Autorze\n",
         &menu_4,
         &menu_2,
         &sub_menu_3_1,
@@ -105,7 +127,7 @@ menu_t menu_3 = {
         NULL
 };
 menu_t sub_menu_3_1 = {
-        "XOkrag\nKwadrat\nTrojkat\nTrapez\n",
+        "OkragX\nKwadrat\nTrojkat\nTrapez\n",
         &sub_menu_3_2,
         &sub_menu_3_1,
         NULL,
@@ -113,7 +135,7 @@ menu_t sub_menu_3_1 = {
         print_okrag
 };
 menu_t sub_menu_3_2 = {
-        "Okrag\nXKwadrat\nTrojkat\nTrapez\n",
+        "Okrag\nKwadratX\nTrojkat\nTrapez\n",
         &sub_menu_3_3,
         &sub_menu_3_1,
         NULL,
@@ -121,7 +143,7 @@ menu_t sub_menu_3_2 = {
         print_kwadrat
 };
 menu_t sub_menu_3_3 = {
-        "Okrag\nKwadrat\nXTrojkat\nTrapez\n",
+        "Okrag\nKwadrat\nTrojkatX\nTrapez\n",
         &sub_menu_3_4,
         &sub_menu_3_2,
         NULL,
@@ -129,7 +151,7 @@ menu_t sub_menu_3_3 = {
         print_trojkat
 };
 menu_t sub_menu_3_4 = {
-        "Okrag\nKwadrat\nTrojkat\nXTrapez\n",
+        "Okrag\nKwadrat\nTrojkat\nTrapezX\n",
         &sub_menu_3_4,
         &sub_menu_3_3,
         NULL,
@@ -138,7 +160,7 @@ menu_t sub_menu_3_4 = {
 
 };
 menu_t menu_4 = {
-        "Obraz\nTekst+obraz\nFigury\nXO Autorze\n",
+        "Obraz\nTekst+obraz\nFigury\nO AutorzeX\n",
         &menu_4,
         &menu_3,
         NULL,
@@ -150,6 +172,7 @@ menu_t menu_4 = {
 void prinf_menu(const char *text) {
     //LCDClearScreen();
     unsigned char counter = 0;
+    unsigned lcd = 10;
     char tab[25];
     unsigned char t_c = 3;
     unsigned l_c = 1;
@@ -161,6 +184,11 @@ void prinf_menu(const char *text) {
             tab[t_c] = text[counter];
             t_c++;
         } else {
+            unsigned char green = 0;
+            if(tab[t_c-1] == 'X'){
+                green = 1;
+                tab[t_c-1] = ' ';
+            }
             while (t_c != 24) {
                 tab[t_c] = ' ';
                 t_c++;
@@ -169,8 +197,14 @@ void prinf_menu(const char *text) {
             tab[1] = '.';
             tab[2] = ' ';
             t_c = 3;
-            printf("%s\n", tab);
-            //LCDPutStr(tab, 10, 5, MEDIUM, BLACK, WHITE);
+            if(green){
+                printf("XXXXX%s\n",tab);
+                //LCDPutStr(tab, lcd, 5, MEDIUM, BLACK, GREEN);
+            }else{
+                printf("%s\n", tab);
+                //LCDPutStr(tab, lcd, 5, MEDIUM, BLACK, WHITE);
+            }
+            lcd += 20;
         }
         counter++;
     }
@@ -183,7 +217,6 @@ int main() {
     while (1) {
         scanf("%c", &a);
         switch (a) {
-
             case 'w':
                 currentPointer = currentPointer->prev;
                 prinf_menu(currentPointer->name);
@@ -216,20 +249,3 @@ int main() {
         }
     }
 }
-
-
-/*
-1. Obraz
-- 1. Obraz1
-- 2. Obraz2
-- 3. Animacja 0.5s obraz1 -> 0.5s obraz2
-2. Tekst+obraz -> Dowolny tekst (tłoTekstu - transparentne) na obrazie
-3. Figury
-- okrąg
-- kwadrat
-- trójkąt
-- trapez -> trapez musimy narysowac sami. Wiele mozliwości (nie obraz!) pojedyncze piksele lub narysowac 4 linie
-4. Autor albo O Autorze
-Imię_Nazwisko
-Nr. grupy
- */
