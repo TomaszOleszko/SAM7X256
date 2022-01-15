@@ -80,39 +80,15 @@ void show_author(void) {
 
 menu_t menu_1, menu_2, menu_3, menu_4, sub_menu_1_1, sub_menu_1_2, sub_menu_1_3, sub_menu_3_1, sub_menu_3_2, sub_menu_3_3, sub_menu_3_4;
 menu_t menu_1 = {
-        "ObrazX\nTekst+obraz\nFigury\nO Autorze\n",
-        &menu_2,
-        &menu_1,
+        "1. Obraz",
+        & menu_2,
+        NULL,
         &sub_menu_1_1,
         NULL,
         NULL
 };
-menu_t sub_menu_1_1 = {
-        "Obraz 1X\nObraz 2\nAnimacja\n",
-        &sub_menu_1_2,
-        &sub_menu_1_1,
-        NULL,
-        &menu_1,
-        print_obraz1
-};
-menu_t sub_menu_1_2 = {
-        "Obraz 1\nObraz 2X\nAnimacja\n",
-        &sub_menu_1_3,
-        &sub_menu_1_1,
-        NULL,
-        &menu_1,
-        print_obraz2
-};
-menu_t sub_menu_1_3 = {
-        "Obraz 1\nObraz 2\nAnimacjaX\n",
-        &sub_menu_1_3,
-        &sub_menu_1_2,
-        NULL,
-        &menu_1,
-        print_animacja
-};
 menu_t menu_2 = {
-        "Obraz\nTekst+obrazX\nFigury\nO Autorze\n",
+        "2. Tekst+obraz",
         &menu_3,
         &menu_1,
         NULL,
@@ -120,23 +96,58 @@ menu_t menu_2 = {
         print_obrazItekst
 };
 menu_t menu_3 = {
-        "Obraz\nTekst+obraz\nFiguryX\nO Autorze\n",
+        "3. Figury",
         &menu_4,
         &menu_2,
         &sub_menu_3_1,
         NULL,
         NULL
 };
+menu_t menu_4 = {
+        "4. O Autorze",
+        NULL,
+        &menu_3,
+        NULL,
+        NULL,
+        show_author
+};
+
+menu_t sub_menu_1_1 = {
+        "1. Obraz 1",
+        &sub_menu_1_2,
+        NULL,
+        NULL,
+        &menu_1,
+        print_obraz1
+};
+menu_t sub_menu_1_2 = {
+        "2. Obraz 2",
+        &sub_menu_1_3,
+        &sub_menu_1_1,
+        NULL,
+        &menu_1,
+        print_obraz2
+};
+menu_t sub_menu_1_3 = {
+        "3. Animacja",
+        NULL,
+        &sub_menu_1_2,
+        NULL,
+        &menu_1,
+        print_animacja
+};
+
+
 menu_t sub_menu_3_1 = {
-        "OkragX\nKwadrat\nTrojkat\nTrapez\n",
+        "1. Okrag",
         &sub_menu_3_2,
-        &sub_menu_3_1,
+        NULL,
         NULL,
         &menu_3,
         print_okrag
 };
 menu_t sub_menu_3_2 = {
-        "Okrag\nKwadratX\nTrojkat\nTrapez\n",
+        "2. Kwadrat",
         &sub_menu_3_3,
         &sub_menu_3_1,
         NULL,
@@ -144,7 +155,7 @@ menu_t sub_menu_3_2 = {
         print_kwadrat
 };
 menu_t sub_menu_3_3 = {
-        "Okrag\nKwadrat\nTrojkatX\nTrapez\n",
+        "3. Trojkat",
         &sub_menu_3_4,
         &sub_menu_3_2,
         NULL,
@@ -152,22 +163,15 @@ menu_t sub_menu_3_3 = {
         print_trojkat
 };
 menu_t sub_menu_3_4 = {
-        "Okrag\nKwadrat\nTrojkat\nTrapezX\n",
-        &sub_menu_3_4,
+        "4. Trapez",
+        NULL,
         &sub_menu_3_3,
         NULL,
         &menu_3,
         print_trapez
 
 };
-menu_t menu_4 = {
-        "Obraz\nTekst+obraz\nFigury\nO AutorzeX\n",
-        &menu_4,
-        &menu_3,
-        NULL,
-        NULL,
-        show_author
-};
+
 
 
 void prinf_menu(const char *text) {
@@ -211,40 +215,76 @@ void prinf_menu(const char *text) {
     }
 }
 
+void displayName(menu_t *menu, menu_t *curr){
+    if(menu->name[0] == curr->name[0]) {
+        printf("%s selected\n", menu->name);
+        return;
+    }
+    printf("%s\n",menu->name);
+}
+
+void printMenu(menu_t *menu, menu_t *curr){
+    if(curr == NULL){
+        return;
+    }
+    while(menu != NULL){
+        displayName(menu,curr);
+        menu = menu->next;
+    }
+}
+
+void changeSelect(menu_t **menu, menu_t *sel){
+    if(sel == NULL){
+        return;
+    }
+    *menu = sel;
+}
+void changeMenu(menu_t **menu, menu_t **selectedMenu, menu_t *targetMenu){
+    if(targetMenu == NULL)
+        return;
+    *menu = targetMenu;
+    *selectedMenu = *menu;
+}
+
 int main() {
     menu_t *currentPointer = &menu_1; // Aktualny wskaźnik
+    menu_t *selected = currentPointer;
     char a = 0;
-    prinf_menu(currentPointer->name);
+    char ismenu = 0;
+    printMenu(currentPointer, selected);
     while (1) {
         scanf("%c", &a);
+
         switch (a) {
             case 'w':
-                currentPointer = currentPointer->prev;
-                prinf_menu(currentPointer->name);
+                changeSelect(&selected, selected->prev);
+                printMenu(currentPointer, selected);
                 break;
             case 's':
-                currentPointer = currentPointer->next;
-                prinf_menu(currentPointer->name);
+                changeSelect(&selected,selected->next);
+                printMenu(currentPointer, selected);
                 break;
             case 'd':
-                if (currentPointer->child == NULL) {
-                    currentPointer->menu_function();
-                    // while nie wcisniesz 'a' wyswietlaj menu func
-                    while (a != 'a') {
-                        scanf("%c", &a);
-                    }
-                    prinf_menu(currentPointer->name);
-                } else {
+                if(selected->menu_function != NULL){
+                    selected->menu_function();
+                    ismenu = 1;
+                }
+                if(selected->child != NULL){
                     currentPointer = currentPointer->child;
-                    prinf_menu(currentPointer->name);
+                    selected = currentPointer;
+                    printMenu(currentPointer, selected);
                 }
                 break;
             case 'a':
-                if (currentPointer->parent == NULL) {
-                    prinf_menu(currentPointer->name);
-                } else {
+                if(currentPointer->parent != NULL && ismenu == 0){
                     currentPointer = currentPointer->parent;
-                    prinf_menu(currentPointer->name);
+                    selected = currentPointer;
+                    printMenu(currentPointer, selected);
+                }
+
+                if(ismenu == 1){
+                    ismenu = 0;
+                    printMenu(currentPointer, selected);
                 }
                 break;
         }
