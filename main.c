@@ -1,5 +1,5 @@
 #include <stdio.h>
-//#include <targets\AT91SAM7.h>
+#include <targets\AT91SAM7.h>
 #include "PCF8833U8_lcd.h"
 
 #define up PIOA_SODR_P9
@@ -19,37 +19,38 @@ struct menu_struct {
     void ( *menu_function)(void);
 };
 
-/*
 __attribute__ ((section(".fast")))
 void delay(int n) //procedura opoznienia
 {
     volatile int i;
-    for(i=3000*n;i>0;i--)
-    {
+    for (i = 3000 * n; i > 0; i--) {
         __asm__("nop");
     }
 }
-*/
+
 
 void print_obraz1(void) {
-    printf("Obraz 1 :DDD\n");
+    //
 }
 
 void print_obraz2(void) {
-    printf("Obraz 2 :DDD\n");
+    //
 }
 
 void print_animacja(void) {
     while (1) {
         print_obraz1();
-        // delay(500);
+        delay(500);
         print_obraz2();
-        // delay(500);
+        delay(500);
+        if (!(PIOA_PDSR & left) {
+            break;
+        }
     }
 }
 
 void print_obrazItekst(void) {
-    printf("Obraz i tekst\n");
+    //
 }
 
 void print_okrag(void) {
@@ -170,6 +171,38 @@ menu_t sub_menu_3_4 = {
 
 };
 
+
+void show_menu(int counter) {
+    LCDClearScreen();
+    switch (counter) {
+        case 0:
+            LCDPutStr("1. Obraz", 10, 5, MEDIUM, BLACK, GREEN);
+            LCDPutStr("2. Tekst+obraz", 30, 5, MEDIUM, BLACK, WHITE);
+            LCDPutStr("3. Figury", 50, 5, MEDIUM, BLACK, WHITE);
+            LCDPutStr("4. O Autorze", 70, 5, MEDIUM, BLACK, WHITE);
+            break;
+        case 1:
+            LCDPutStr("1. Obraz", 10, 5, MEDIUM, BLACK, WHITE);
+            LCDPutStr("2. Tekst+obraz", 30, 5, MEDIUM, BLACK, GREEN);
+            LCDPutStr("3. Figury", 50, 5, MEDIUM, BLACK, WHITE);
+            LCDPutStr("4. O Autorze", 70, 5, MEDIUM, BLACK, WHITE);
+            break;
+        case 2:
+            LCDPutStr("1. Obraz", 10, 5, MEDIUM, BLACK, WHITE);
+            LCDPutStr("2. Tekst+obraz", 30, 5, MEDIUM, BLACK, WHITE);
+            LCDPutStr("3. Figury", 50, 5, MEDIUM, BLACK, GREEN);
+            LCDPutStr("4. O Autorze", 70, 5, MEDIUM, BLACK, WHITE);
+            break;
+        case 3:
+            LCDPutStr("1. Obraz", 10, 5, MEDIUM, BLACK, WHITE);
+            LCDPutStr("2. Tekst+obraz", 30, 5, MEDIUM, BLACK, WHITE);
+            LCDPutStr("3. Figury", 50, 5, MEDIUM, BLACK, WHITE);
+            LCDPutStr("4. O Autorze", 70, 5, MEDIUM, BLACK, GREEN);
+            break;
+    }
+
+}
+
 void displayName(menu_t *menu, menu_t *curr) {
     if (menu->name[0] == curr->name[0]) {
         printf("%s selected\n", menu->name);
@@ -195,46 +228,56 @@ void changeSelect(menu_t **menu, menu_t *sel) {
     *menu = sel;
 }
 
-int main() {
-    menu_t *currentPointer = &menu_1; // Aktualny wskaźnik
-    menu_t *selected = currentPointer;
-    char a = 0;
-    char ismenu = 0;
-    printMenu(currentPointer, selected);
-    while (1) {
-        scanf("%c", &a);
 
-        switch (a) {
-            case 'w':
-                changeSelect(&selected, selected->prev);
+int main() {
+    PMC_PCER = PMC_PCER_PIOA;
+    InitLCD();
+    SetContrast(30);
+    menu_t *currentPointer = &menu_1;
+    prinf_menu(currentPointer->name);
+    char ismenu = 0;
+    while (1) {
+        if (!(PIOA_PDSR & up)) {
+            changeSelect(&selected, selected->prev);
+            printMenu(currentPointer, selected);
+            while (!(PIOA_PDSR & up)) {
+                continue;
+            }
+        }
+        if (!(PIOA_PDSR & down)) {
+            changeSelect(&selected, selected->next);
+            printMenu(currentPointer, selected);
+            while (!(PIOA_PDSR & down)) {
+                continue;
+            }
+        }
+        if (!(PIOA_PDSR & right)) {
+            if (selected->menu_function != NULL) {
+                selected->menu_function();
+                ismenu = 1;
+            }
+            if (selected->child != NULL) {
+                currentPointer = currentPointer->child;
+                selected = currentPointer;
                 printMenu(currentPointer, selected);
-                break;
-            case 's':
-                changeSelect(&selected, selected->next);
+            }
+            while (!(PIOA_PDSR & right)) {
+                continue;
+            }
+        }
+        if (!(PIOA_PDSR & left)) {
+            if (currentPointer->parent != NULL && ismenu == 0) {
+                currentPointer = currentPointer->parent;
+                selected = currentPointer;
                 printMenu(currentPointer, selected);
-                break;
-            case 'd':
-                if (selected->menu_function != NULL) {
-                    selected->menu_function();
-                    ismenu = 1;
-                }
-                if (selected->child != NULL) {
-                    currentPointer = currentPointer->child;
-                    selected = currentPointer;
-                    printMenu(currentPointer, selected);
-                }
-                break;
-            case 'a':
-                if (currentPointer->parent != NULL && ismenu == 0) {
-                    currentPointer = currentPointer->parent;
-                    selected = currentPointer;
-                    printMenu(currentPointer, selected);
-                }
-                if (ismenu == 1) {
-                    ismenu = 0;
-                    printMenu(currentPointer, selected);
-                }
-                break;
+            }
+            if (ismenu == 1) {
+                ismenu = 0;
+                printMenu(currentPointer, selected);
+            }
+            while (!(PIOA_PDSR & left)) {
+                continue;
+            }
         }
     }
 }
