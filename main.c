@@ -1,6 +1,7 @@
 #include <stdio.h>
 //#include <targets\AT91SAM7.h>
 #include "PCF8833U8_lcd.h"
+
 #define up PIOA_SODR_P9
 #define center_push PIOA_SODR_P15
 #define left PIOA_SODR_P7
@@ -52,29 +53,29 @@ void print_obrazItekst(void) {
 }
 
 void print_okrag(void) {
-   // LCDSetCircle(65,65,7,BLACK);
+    // LCDSetCircle(65,65,7,BLACK);
 }
 
 void print_kwadrat(void) {
-   // LCDSetRect(43, 43, 88, 88, 1, BLACK);
+    // LCDSetRect(43, 43, 88, 88, 1, BLACK);
 }
 
 void print_trojkat(void) {
-   // LCDSetLine(95, 95, 95, 35, BLACK);
-   // LCDSetLine(95, 35, 43, 65, BLACK);
-   // LCDSetLine(43, 65, 95, 95, BLACK);
+    // LCDSetLine(95, 95, 95, 35, BLACK);
+    // LCDSetLine(95, 35, 43, 65, BLACK);
+    // LCDSetLine(43, 65, 95, 95, BLACK);
 }
 
 void print_trapez(void) {
-  //  LCDSetLine(30, 20, 30, 110, BLACK);
-  //  LCDSetLine(30, 20, 80, 5, BLACK);
-   // LCDSetLine(80, 125, 30, 110, BLACK);
-  //  LCDSetLine(80, 5, 80, 125, BLACK);
+    //  LCDSetLine(30, 20, 30, 110, BLACK);
+    //  LCDSetLine(30, 20, 80, 5, BLACK);
+    // LCDSetLine(80, 125, 30, 110, BLACK);
+    //  LCDSetLine(80, 5, 80, 125, BLACK);
 }
 
 void show_author(void) {
-   // LCDPutStr("Tomasz_Oleszko", 43, 11, MEDIUM, BLACK, GREEN);
-   // LCDPutStr("GR 7.5", 64, 45, MEDIUM, BLACK, WHITE);
+    // LCDPutStr("Tomasz_Oleszko", 43, 11, MEDIUM, BLACK, GREEN);
+    // LCDPutStr("GR 7.5", 64, 45, MEDIUM, BLACK, WHITE);
 }
 
 menu_t menu_1, menu_2, menu_3, menu_4, sub_menu_1_1, sub_menu_1_2, sub_menu_1_3, sub_menu_3_1, sub_menu_3_2, sub_menu_3_3, sub_menu_3_4;
@@ -185,9 +186,9 @@ void prinf_menu(const char *text) {
             t_c++;
         } else {
             unsigned char green = 0;
-            if(tab[t_c-1] == 'X'){
+            if (tab[t_c - 1] == 'X') {
                 green = 1;
-                tab[t_c-1] = ' ';
+                tab[t_c - 1] = ' ';
             }
             while (t_c != 24) {
                 tab[t_c] = ' ';
@@ -197,10 +198,10 @@ void prinf_menu(const char *text) {
             tab[1] = '.';
             tab[2] = ' ';
             t_c = 3;
-            if(green){
-                printf("XXXXX%s\n",tab);
+            if (green) {
+                printf("XXXXX%s\n", tab);
                 //LCDPutStr(tab, lcd, 5, MEDIUM, BLACK, GREEN);
-            }else{
+            } else {
                 printf("%s\n", tab);
                 //LCDPutStr(tab, lcd, 5, MEDIUM, BLACK, WHITE);
             }
