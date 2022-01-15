@@ -81,7 +81,7 @@ void show_author(void) {
 menu_t menu_1, menu_2, menu_3, menu_4, sub_menu_1_1, sub_menu_1_2, sub_menu_1_3, sub_menu_3_1, sub_menu_3_2, sub_menu_3_3, sub_menu_3_4;
 menu_t menu_1 = {
         "1. Obraz",
-        & menu_2,
+        &menu_2,
         NULL,
         &sub_menu_1_1,
         NULL,
@@ -136,8 +136,6 @@ menu_t sub_menu_1_3 = {
         &menu_1,
         print_animacja
 };
-
-
 menu_t sub_menu_3_1 = {
         "1. Okrag",
         &sub_menu_3_2,
@@ -172,78 +170,29 @@ menu_t sub_menu_3_4 = {
 
 };
 
-
-
-void prinf_menu(const char *text) {
-    //LCDClearScreen();
-    unsigned char counter = 0;
-    unsigned lcd = 10;
-    char tab[25];
-    unsigned char t_c = 3;
-    unsigned l_c = 1;
-
-    tab[24] = '\0';
-    while (text[counter] != '\0') {
-        // dodawac chary str_talk
-        if (text[counter] != '\n') {
-            tab[t_c] = text[counter];
-            t_c++;
-        } else {
-            unsigned char green = 0;
-            if (tab[t_c - 1] == 'X') {
-                green = 1;
-                tab[t_c - 1] = ' ';
-            }
-            while (t_c != 24) {
-                tab[t_c] = ' ';
-                t_c++;
-            }
-            tab[0] = l_c++ + '0';
-            tab[1] = '.';
-            tab[2] = ' ';
-            t_c = 3;
-            if (green) {
-                printf("XXXXX%s\n", tab);
-                //LCDPutStr(tab, lcd, 5, MEDIUM, BLACK, GREEN);
-            } else {
-                printf("%s\n", tab);
-                //LCDPutStr(tab, lcd, 5, MEDIUM, BLACK, WHITE);
-            }
-            lcd += 20;
-        }
-        counter++;
-    }
-}
-
-void displayName(menu_t *menu, menu_t *curr){
-    if(menu->name[0] == curr->name[0]) {
+void displayName(menu_t *menu, menu_t *curr) {
+    if (menu->name[0] == curr->name[0]) {
         printf("%s selected\n", menu->name);
         return;
     }
-    printf("%s\n",menu->name);
+    printf("%s\n", menu->name);
 }
 
-void printMenu(menu_t *menu, menu_t *curr){
-    if(curr == NULL){
+void printMenu(menu_t *menu, menu_t *curr) {
+    if (curr == NULL) {
         return;
     }
-    while(menu != NULL){
-        displayName(menu,curr);
+    while (menu != NULL) {
+        displayName(menu, curr);
         menu = menu->next;
     }
 }
 
-void changeSelect(menu_t **menu, menu_t *sel){
-    if(sel == NULL){
+void changeSelect(menu_t **menu, menu_t *sel) {
+    if (sel == NULL) {
         return;
     }
     *menu = sel;
-}
-void changeMenu(menu_t **menu, menu_t **selectedMenu, menu_t *targetMenu){
-    if(targetMenu == NULL)
-        return;
-    *menu = targetMenu;
-    *selectedMenu = *menu;
 }
 
 int main() {
@@ -261,28 +210,27 @@ int main() {
                 printMenu(currentPointer, selected);
                 break;
             case 's':
-                changeSelect(&selected,selected->next);
+                changeSelect(&selected, selected->next);
                 printMenu(currentPointer, selected);
                 break;
             case 'd':
-                if(selected->menu_function != NULL){
+                if (selected->menu_function != NULL) {
                     selected->menu_function();
                     ismenu = 1;
                 }
-                if(selected->child != NULL){
+                if (selected->child != NULL) {
                     currentPointer = currentPointer->child;
                     selected = currentPointer;
                     printMenu(currentPointer, selected);
                 }
                 break;
             case 'a':
-                if(currentPointer->parent != NULL && ismenu == 0){
+                if (currentPointer->parent != NULL && ismenu == 0) {
                     currentPointer = currentPointer->parent;
                     selected = currentPointer;
                     printMenu(currentPointer, selected);
                 }
-
-                if(ismenu == 1){
+                if (ismenu == 1) {
                     ismenu = 0;
                     printMenu(currentPointer, selected);
                 }
