@@ -28,20 +28,19 @@ void delay(int n) //procedura opoznienia
     }
 }
 
-
-void print_obraz1(void) {
+void printImg1(void) {
     //
 }
 
-void print_obraz2(void) {
+void printImg2(void) {
     //
 }
 
-void print_animacja(void) {
+void showAnimation(void) {
     while (1) {
-        print_obraz1();
+        printImg1();
         delay(500);
-        print_obraz2();
+        printImg2();
         delay(500);
         if (!(PIOA_PDSR & left) {
             break;
@@ -49,34 +48,34 @@ void print_animacja(void) {
     }
 }
 
-void print_obrazItekst(void) {
+void showImgAndTxt(void) {
     //
 }
 
-void print_okrag(void) {
-    // LCDSetCircle(65,65,7,BLACK);
+void showCircle(void) {
+    LCDSetCircle(65, 65, 7, BLACK);
 }
 
-void print_kwadrat(void) {
-    // LCDSetRect(43, 43, 88, 88, 1, BLACK);
+void showSquare(void) {
+    LCDSetRect(43, 43, 88, 88, 1, BLACK);
 }
 
-void print_trojkat(void) {
-    // LCDSetLine(95, 95, 95, 35, BLACK);
-    // LCDSetLine(95, 35, 43, 65, BLACK);
-    // LCDSetLine(43, 65, 95, 95, BLACK);
+void showTriangle(void) {
+    LCDSetLine(95, 95, 95, 35, BLACK);
+    LCDSetLine(95, 35, 43, 65, BLACK);
+    LCDSetLine(43, 65, 95, 95, BLACK);
 }
 
-void print_trapez(void) {
-    //  LCDSetLine(30, 20, 30, 110, BLACK);
-    //  LCDSetLine(30, 20, 80, 5, BLACK);
-    // LCDSetLine(80, 125, 30, 110, BLACK);
-    //  LCDSetLine(80, 5, 80, 125, BLACK);
+void showTrapeze(void) {
+    LCDSetLine(30, 20, 30, 110, BLACK);
+    LCDSetLine(30, 20, 80, 5, BLACK);
+    LCDSetLine(80, 125, 30, 110, BLACK);
+    LCDSetLine(80, 5, 80, 125, BLACK);
 }
 
-void show_author(void) {
-    // LCDPutStr("Tomasz_Oleszko", 43, 11, MEDIUM, BLACK, GREEN);
-    // LCDPutStr("GR 7.5", 64, 45, MEDIUM, BLACK, WHITE);
+void showAuthor(void) {
+    LCDPutStr("Tomasz_Oleszko", 43, 11, MEDIUM, BLACK, GREEN);
+    LCDPutStr("GR 7.5", 64, 45, MEDIUM, BLACK, GREEN);
 }
 
 menu_t menu_1, menu_2, menu_3, menu_4, sub_menu_1_1, sub_menu_1_2, sub_menu_1_3, sub_menu_3_1, sub_menu_3_2, sub_menu_3_3, sub_menu_3_4;
@@ -94,7 +93,7 @@ menu_t menu_2 = {
         &menu_1,
         NULL,
         NULL,
-        print_obrazItekst
+        showImgAndTxt
 };
 menu_t menu_3 = {
         "3. Figury",
@@ -110,7 +109,7 @@ menu_t menu_4 = {
         &menu_3,
         NULL,
         NULL,
-        show_author
+        showAuthor
 };
 
 menu_t sub_menu_1_1 = {
@@ -119,7 +118,7 @@ menu_t sub_menu_1_1 = {
         NULL,
         NULL,
         &menu_1,
-        print_obraz1
+        printImg1
 };
 menu_t sub_menu_1_2 = {
         "2. Obraz 2",
@@ -127,7 +126,7 @@ menu_t sub_menu_1_2 = {
         &sub_menu_1_1,
         NULL,
         &menu_1,
-        print_obraz2
+        printImg2
 };
 menu_t sub_menu_1_3 = {
         "3. Animacja",
@@ -135,7 +134,7 @@ menu_t sub_menu_1_3 = {
         &sub_menu_1_2,
         NULL,
         &menu_1,
-        print_animacja
+        showAnimation
 };
 menu_t sub_menu_3_1 = {
         "1. Okrag",
@@ -143,7 +142,7 @@ menu_t sub_menu_3_1 = {
         NULL,
         NULL,
         &menu_3,
-        print_okrag
+        showCircle
 };
 menu_t sub_menu_3_2 = {
         "2. Kwadrat",
@@ -151,7 +150,7 @@ menu_t sub_menu_3_2 = {
         &sub_menu_3_1,
         NULL,
         &menu_3,
-        print_kwadrat
+        showSquare
 };
 menu_t sub_menu_3_3 = {
         "3. Trojkat",
@@ -159,7 +158,7 @@ menu_t sub_menu_3_3 = {
         &sub_menu_3_2,
         NULL,
         &menu_3,
-        print_trojkat
+        showTriangle
 };
 menu_t sub_menu_3_4 = {
         "4. Trapez",
@@ -167,56 +166,27 @@ menu_t sub_menu_3_4 = {
         &sub_menu_3_3,
         NULL,
         &menu_3,
-        print_trapez
+        showTrapeze
 
 };
 
-
-void show_menu(int counter) {
-    LCDClearScreen();
-    switch (counter) {
-        case 0:
-            LCDPutStr("1. Obraz", 10, 5, MEDIUM, BLACK, GREEN);
-            LCDPutStr("2. Tekst+obraz", 30, 5, MEDIUM, BLACK, WHITE);
-            LCDPutStr("3. Figury", 50, 5, MEDIUM, BLACK, WHITE);
-            LCDPutStr("4. O Autorze", 70, 5, MEDIUM, BLACK, WHITE);
-            break;
-        case 1:
-            LCDPutStr("1. Obraz", 10, 5, MEDIUM, BLACK, WHITE);
-            LCDPutStr("2. Tekst+obraz", 30, 5, MEDIUM, BLACK, GREEN);
-            LCDPutStr("3. Figury", 50, 5, MEDIUM, BLACK, WHITE);
-            LCDPutStr("4. O Autorze", 70, 5, MEDIUM, BLACK, WHITE);
-            break;
-        case 2:
-            LCDPutStr("1. Obraz", 10, 5, MEDIUM, BLACK, WHITE);
-            LCDPutStr("2. Tekst+obraz", 30, 5, MEDIUM, BLACK, WHITE);
-            LCDPutStr("3. Figury", 50, 5, MEDIUM, BLACK, GREEN);
-            LCDPutStr("4. O Autorze", 70, 5, MEDIUM, BLACK, WHITE);
-            break;
-        case 3:
-            LCDPutStr("1. Obraz", 10, 5, MEDIUM, BLACK, WHITE);
-            LCDPutStr("2. Tekst+obraz", 30, 5, MEDIUM, BLACK, WHITE);
-            LCDPutStr("3. Figury", 50, 5, MEDIUM, BLACK, WHITE);
-            LCDPutStr("4. O Autorze", 70, 5, MEDIUM, BLACK, GREEN);
-            break;
-    }
-
-}
-
-void displayName(menu_t *menu, menu_t *curr) {
+void displayName(menu_t *menu, menu_t *curr, const unsigned char pos) {
     if (menu->name[0] == curr->name[0]) {
-        printf("%s selected\n", menu->name);
+        LCDPutStr((char *) menu->name, pos, 5, MEDIUM, BLACK, GREEN);
         return;
     }
-    printf("%s\n", menu->name);
+    LCDPutStr((char *) menu->name, pos, 5, MEDIUM, BLACK, WHITE);
 }
 
 void printMenu(menu_t *menu, menu_t *curr) {
+    LCDClearScreen();
     if (curr == NULL) {
         return;
     }
+    unsigned char pos = 10;
     while (menu != NULL) {
-        displayName(menu, curr);
+        displayName(menu, curr, pos);
+        pos += 20;
         menu = menu->next;
     }
 }
@@ -233,8 +203,9 @@ int main() {
     PMC_PCER = PMC_PCER_PIOA;
     InitLCD();
     SetContrast(30);
-    menu_t *currentPointer = &menu_1;
-    prinf_menu(currentPointer->name);
+    menu_t *currentPointer = &menu_1; // Aktualny wskaźnik
+    menu_t *selected = currentPointer;
+    printMenu(currentPointer, selected);
     char ismenu = 0;
     while (1) {
         if (!(PIOA_PDSR & up)) {
